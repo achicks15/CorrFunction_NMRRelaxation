@@ -18,7 +18,7 @@ import seaborn as sns
 
 def split_NHVecs(nhvecs, dt, tau):
     """
-    This function will split the trajectory in chuncks based off tau_m or tau memory i.e. the memory of the 
+    This function will split the trajectory in chunks defined by tau. It should split into 
     """
     nFiles = len(nhvecs)
     #dt = 20.0  ##(20 ps)
@@ -50,7 +50,9 @@ def split_NHVecs(nhvecs, dt, tau):
 
 
 def calc_Ct(nhvecs):
-    
+    """
+    Calculates the correlation function of the N-H bond vectors found in 
+    """
     sh = nhvecs.shape
     nReplicates=sh[0] ; nDeltas=int(sh[1]/2) ; nResidues=sh[2]
     Ct  = np.zeros( (nDeltas, nResidues), dtype=nhvecs.dtype )
@@ -227,91 +229,6 @@ def do_Expstyle_fit2(num_pars, x, y, dy=np.empty([]), tau_mem=50.):
         return calc_chi(y, ymodel, dy), popt, popv, ymodel
 
 
-# In[10]:
-
-
-def do_Expstyle_fit3(num_pars, x, y, dy=np.empty([]), tau_mem=50., pass_guess=False, params=[]):
-    
-    """
-    This function does the same thing as do_Expstyle_fit2 except it adds a different element.
-    To be used with the findbest_Expstyle_fits2, where if a new fit doesn't work, retry with the results as an 
-    initial guess. Old and findbest_Expstyle_fits2 needs to be edited to make this work. 
-    """
-    
-    if (not pass_guess):
-        b1_guess = [y[0]/num_pars/2]*(num_pars/2) 
-        t1_guess = [tau_mem/8.0, tau_mem/16.0, tau_mem/64.0, tau_mem/128.0]
-        
-        if num_pars==1:
-            func=func_exp_decay1
-            guess=(t1_guess[2])
-            bound=(0.,np.inf)
-        elif num_pars==2:
-            func=func_exp_decay2
-            guess=(b1_guess, t1_guess[2])
-            bound=([0.0, x[0]],[1., tau_mem])
-        elif num_pars==3:
-            func=func_exp_decay3
-            guess=(b1_guess, t1_guess[1], t1_guess[2])
-            bound=([0.0,x[0],x[0]],[1., tau_mem, tau_mem])
-        elif num_pars==4:
-            func=func_exp_decay4
-            guess=(b1_guess, t1_guess[1], b1_guess, t1_guess[2])
-            bound=([0.0, x[0], 0.0, x[0]],[1., tau_mem, 1., tau_mem])
-        elif num_pars==5:
-            func=func_exp_decay5
-            guess=(b1_guess, t1_guess[0], b1_guess, t1_guess[1], t1_guess[2])
-            bound=([0.0, x[0], 0.0, x[0],x[0]],[1., tau_mem, 1., tau_mem, tau_mem])
-        elif num_pars==6:
-            func=func_exp_decay6
-            guess=(b1_guess, t1_guess[0], b1_guess, t1_guess[1], b1_guess, t1_guess[2])
-            bound=([0.0, x[0], 0.0, x[0], 0.0, x[0]],[1., np.inf, 1., np.inf, 1., np.inf])
-        elif num_pars==7:
-            func=func_exp_decay7
-            guess=(b1_guess, t1_guess[0], b1_guess, t1_guess[1], b1_guess, t1_guess[2],
-               t1_guess[3])
-            bound=([0.0, x[0], 0.0, x[0], 0.0, x[0], x[0]],[1., tau_mem, 1., tau_mem, 1., tau_mem, tau_mem])
-        elif num_pars==8:
-            func=func_exp_decay8
-            guess=(b1_guess, t1_guess[0], b1_guess, t1_guess[1], b1_guess, t1_guess[2],
-               b1_guess, t1_guess[3])
-            bound=([0.0, x[0], 0.0, x[0], 0.0, x[0], 0.0, x[0]],[1., tau_mem, 1., tau_mem, 1., tau_mem, 1., tau_mem])
-            
-    elif pass_guess:
-        print("pass_guess: for {}".format(num_pars))
-        if num_pars==1:
-            func=func_exp_decay1
-            guess=(t1_guess[2])
-            bound=(0.,np.inf)
-        elif num_pars==2:
-            func=func_exp_decay2
-            guess=tuple(params)
-            bound=([0.0, x[0]],[1., tau_mem])
-        elif num_pars==4:
-            func=func_exp_decay4
-            guess=tuple(params)
-            bound=([0.0, x[0], 0.0, x[0]],[1., tau_mem, 1., tau_mem])
-        elif num_pars==6:
-            func=func_exp_decay6
-            guess=tuple(params)
-            bound=([0.0, x[0], 0.0, x[0], 0.0, x[0]],[1., tau_mem, 1., tau_mem, 1., tau_mem])
-
-    if dy != []:
-        popt, popv = curve_fit(func, x, y, p0=guess, sigma=dy, bounds=bound, method='trf', loss='soft_l1')
-    else:
-        popt, popv = curve_fit(func, x, y, p0=guess, bounds=bound, loss='soft_l1')
-
-    ymodel=[ func(x[i], *popt) for i in range(len(x)) ]
-    #print ymodel
-
-    bExceed=_bound_check(func, popt)
-    if bExceed:
-        print >> sys.stderr, "= = = WARNING, curve fitting in do_LSstyle_fit returns a sum>1.//"
-        return 9999.99, popt, np.sqrt(np.diag(popv)), ymodel
-    else:
-        return calc_chi(y, ymodel, dy), popt, popv, ymodel
-
-
 # In[11]:
 
 
@@ -340,7 +257,6 @@ def findbest_Expstyle_fits2(x, y, taum=150.0, dy=[], bPrint=True, par_list=[2,3,
             print(" ...fit returns an error! Continuing.")
             break
         bBadFit=False
-        reverted=False
         
         errors = np.sqrt(np.diag(covarMat))
         step_check = 0
