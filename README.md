@@ -13,3 +13,5 @@ Outline of Code:
     b. Or fix the fit to a set sum of exponentials
 4. Direct fourier transform fitted amplitudes and correlation times to get the spectral densities
 5. Calculate the NMR relaxation parameters for a specified magnetic field
+
+Using This Code:
