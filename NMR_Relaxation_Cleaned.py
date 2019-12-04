@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
-
+## Author: Alan Hicks
 # In[1]:
 
 
@@ -8,9 +8,7 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
 import mdtraj as md
-import matplotlib as mpl
-import matplotlib.pyplot as plt 
-import seaborn as sns 
+
 
 
 # In[2]:
@@ -18,11 +16,11 @@ import seaborn as sns
 
 def split_NHVecs(nhvecs, dt, tau):
     """
-    This function will split the trajectory in chunks defined by tau. It should split into 
+    This function will split the trajectory in chunks defined by tau. 
+    dt = timestep of the simulation
+    tau = 
     """
-    nFiles = len(nhvecs)
-    #dt = 20.0  ##(20 ps)
-    #tau = 200000 ## (100 ns)
+    nFiles = len(nhvecs) ## number of trajectories
     nFramesPerChunk = int(tau/dt) ###tau/timestep 
     used_frames = np.zeros(nFiles,dtype=int)
     remainingFrames = np.zeros(nFiles,dtype=int)
@@ -283,7 +281,7 @@ def findbest_Expstyle_fits2(x, y, taum=150.0, dy=[], bPrint=True, par_list=[2,3,
                 bBadFit=True
                 break
             
-            step_check += 1;
+            step_check += 1
             
                 
         chi_check = chi/chi_min
@@ -297,7 +295,6 @@ def findbest_Expstyle_fits2(x, y, taum=150.0, dy=[], bPrint=True, par_list=[2,3,
         if (not bBadFit) and (chi/chi_min < threshold):
             chi_min=chi ; par_min=params ; err_min=errors ; npar_min=npars ; ymod_min=ymodel; covar_min = covarMat;
         else:
-            ## Test continue here vs break
             break; 
             
     tau_min = par_min[1::2]
@@ -306,7 +303,7 @@ def findbest_Expstyle_fits2(x, y, taum=150.0, dy=[], bPrint=True, par_list=[2,3,
     
     err_min = err_min[nsort_params] 
     par_min = par_min[nsort_params]
-    sort_covarMat = covarMat[:,nsort_params][nsort_params]
+    sort_covarMat = covar_min[:,nsort_params][nsort_params]
     names = _return_parameter_names(npar_min)    
     
     if bPrint:       
@@ -320,14 +317,13 @@ def findbest_Expstyle_fits2(x, y, taum=150.0, dy=[], bPrint=True, par_list=[2,3,
 
 # In[12]:
 
-
 def fitstoDF(resnames, chi_list, pars_list, errs_list, names_list):
     ## Set Up columns indices and names for the data frame
     """
     Function that takes the residue names, chi^2, parameters, errors and names of the fits and returns a data frame
     of the parameters.
     """
-    mparnames = _return_parameter_names(8)
+    mparnames = _return_parameter_names(8) ## Always return the longest possible number of 
     mtau_names = np.array(mparnames)[1::2]
     mc_names = np.array(mparnames)[::2]
     colnames = np.array(['Resname','NumExp'])
@@ -387,6 +383,12 @@ def fitstoDF(resnames, chi_list, pars_list, errs_list, names_list):
 
 def fitCorrF(CorrDF, dCorrDF, tau_mem, pars_l, fixfit=False):
     """
+        Input Variables:
+            CorrDF: Dataframe containing the correlation functions. Columns are the NH-bond vectors, rows are timesteps. 
+            dCorrDF: Error in the correlation function at time t
+            tau_mem: Cut-Off time to remove noise at the tail of the correlation function 
+            pars_l : parameters list. 
+            fixfit : Boolean to decide if you want to use a specific exponential function 
         Main function to fit the correlation function. 
         Loops over all residues with N-H vectors and calculates the fit, appends the best fit from findbest_Expstyle_fits2.
         Passes the set of lists to fitstoDF to return a data frame of the best fits for each residue. 
