@@ -15,3 +15,13 @@ Outline of Code:
 5. Calculate the NMR relaxation parameters for a specified magnetic field
 
 Using This Code:
+    Required Python version and modules: (as of )
+    Python 3.5:
+        1. Numpy v1.17.3
+        2. Pandas v0.25.2
+        3. Scipy v1.3.1
+        4. mdtraj v1.9.2
+            a. See https://github.com/mdtraj/mdtraj or http://mdtraj.org/1.9.2/ for installation/documentation
+    
+    1. Calculation of Correlation Functions:
+        The correlation functions
