@@ -2,7 +2,6 @@
 General Overview of Code:
 Python code to calculate the protein backbone NMR relaxation 1H-15N T1, T2 and heteronuclear NOE parameters via fitting the N-H bond correlation functions to a sum of exponentials
 
-Originally written as a standalone Jupyter notebook, but is in the process of being adapted to stand alone script.
 
 Outline of Code:
 1. Calculate the backbone N-H bond vectors
@@ -15,7 +14,7 @@ Outline of Code:
 5. Calculate the NMR relaxation parameters for a specified magnetic field
 
 Using This Code:
-    Required Python version and modules: (as of )
+    Required Python version and modules:
     Python 3.5:
         1. Numpy v1.17.3
         2. Pandas v0.25.2
@@ -23,5 +22,9 @@ Using This Code:
         4. mdtraj v1.9.2
             a. See https://github.com/mdtraj/mdtraj or http://mdtraj.org/1.9.2/ for installation/documentation
     
+    
     1. Calculation of Correlation Functions:
         The correlation functions
+
+Acknowledgements:
+    Several functions were adapted and updated from https://github.com/zharmad/SpinRelax according to the MIT License.  These include "split_NHVecs", calc_Ct, _bound_check, calc_chi, _return_parameter_names, do_Expstyle_fit2, findbest_Expstyle_fits2. 
