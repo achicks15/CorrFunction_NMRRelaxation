@@ -17,8 +17,9 @@ import mdtraj as md
 def split_NHVecs(nhvecs, dt, tau):
     """
     This function will split the trajectory in chunks defined by tau. 
+    nhvecs = array of N-H bond vectors,
     dt = timestep of the simulation
-    tau = 
+    tau = length of chunks  
     """
     nFiles = len(nhvecs) ## number of trajectories
     nFramesPerChunk = int(tau/dt) ###tau/timestep 
@@ -49,7 +50,7 @@ def split_NHVecs(nhvecs, dt, tau):
 
 def calc_Ct(nhvecs):
     """
-    Calculates the correlation function of the N-H bond vectors found in 
+    Calculates the correlation function of the N-H bond vectors found in nhvecs. 
     """
     sh = nhvecs.shape
     nReplicates=sh[0] ; nDeltas=int(sh[1]/2) ; nResidues=sh[2]
@@ -89,6 +90,7 @@ def _bound_check(func, params):
 
 def calc_chi(y1, y2, dy=[]):
     """
+
     calculates the chi^2 difference between the predicted model and the actual data
     """
     if dy != []:
@@ -471,57 +473,7 @@ def calc_NMR_Relax(J, fdd, fcsa, gammaH, gammaN):
     
     return R1, R2, NOE
 
-
-# In[16]:
-
-
-def ErrorProp_SpecDens(omega, params, covarMat):
-    
-    num_pars = covarMat.shape[0]
-        
-    errors = np.sqrt(np.diag(covarMat))
-    dJ = np.zeros((num_pars,num_pars))
-    
-    dfconst_even = lambda om, tau : (tau*1e-9)/(1+np.square(om*(tau*1e-9)))
-    dftau_odd = lambda om, const, tau : (const - const*np.square(om*(tau*1e-9)))/np.square(np.square(om*(tau*1e-9))+1) 
-    
-    for i in range(num_pars):
-
-        if ((i%2)==0.0):
-            di = dfconst_even(omega, params[i])
-        else:
-            di = dftau_odd(omega, params[i-1], params[i])
-
-        for j in range(num_pars):
-        
-            if ((j%2) == 0.0):
-                dj = dfconst_even(omega,params[j])
-            else:
-                dj = dftau_odd(omega, params[j-1], params[j])
-            
-            if i != j:
-                dJ[i,j] = di*dj*(covarMat[i,j])
-            else:
-                dJ[i,j] = (di**2)*(covarMat[i,j])
-                
-    return dJ.sum().sum()
-
-
-# In[17]:
-
-
-def ErrProp_NMR_Relax(J, fdd, fcsa, gammaH, gammaN):
-    
-    R1 = (fdd**2) * (J['Diff'] + (3**2)*J['15N'] + (6**2)*J['Sum']) + (fcsa**2) * J['15N']
-    
-    R2 = ((0.5 * fdd)**2 * ((4**2)*J['0'] + J['Diff'] + (3**2)*J['15N'] + (6**2)*J['1H'] + (6**2)*J['Sum']) 
-          + ((1./6.)**2) * (fcsa**2)*((4**2)*J['0'] + (3**2)*J['15N']) )
-    
-    NOE = (((fdd*gammaH)/(gammaN*R1))**2)*((6**2)*J['Sum'] - J['Diff'])
-    
-    return R1, R2, NOE
-
-
+## Ending function definitions and beginning main implementation of the code:
 # In[18]:
 
 
@@ -543,7 +495,6 @@ tauS = 100  ## ps
 
 
 # In[19]:
-
 
 ## Parameters and Physical Constants for calculation of Relaxation Rates
 
