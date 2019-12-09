@@ -22,7 +22,8 @@ Using This Code:
         4. mdtraj v1.9.2
             a. See https://github.com/mdtraj/mdtraj or http://mdtraj.org/1.9.2/ for installation/documentation
     
-    
+        The latest anaconda environment for this version is listed in "NMRRelax_CondaEnv.txt".
+            "conda create --name NMRRelaxEnv --file NMRRelax_CondaEnv.txt"
     1. Calculation of Correlation Functions:
         The correlation functions
 
