@@ -25,9 +25,8 @@ Using This Code:
         The latest anaconda environment for this version is listed in "NMRRelax_CondaEnv.txt".
             "conda create --name NMRRelaxEnv --file NMRRelax_CondaEnv.txt"
 
-    The code can be split into three different parts: calculation of correlation functions, fitting of the correlation functions, calculation of NMR relaxation parameters. The benefit of the ipynb format of the code is that the user can choose which sections they want to use. For instance, if the user has precalculated the correlation functions, i.e. with the vector and timecorr functions in cpptraj, 
-    1. Calculation of Correlation Functions:
-        The correlation functions
+    The code can be split into three different parts: calculation of correlation functions, fitting of the correlation functions, calculation of NMR relaxation parameters. The benefit of the ipynb format of the code is that the user can choose which sections they want to use. For instance, if the user has precalculated the correlation functions, i.e. with the vector and timecorr functions in cpptraj, they can start with the fitting procedure. 
+    
 
 Acknowledgements:
-    Several functions were adapted and updated from https://github.com/zharmad/SpinRelax according to the MIT License.  These include "split_NHVecs", calc_Ct, _bound_check, calc_chi, _return_parameter_names, do_Expstyle_fit2, findbest_Expstyle_fits2. 
+    Several functions were adapted and updated from https://github.com/zharmad/SpinRelax according to the MIT License, where   These include "split_NHVecs", calc_Ct, _bound_check, calc_chi, _return_parameter_names, do_Expstyle_fit2, findbest_Expstyle_fits2. 
